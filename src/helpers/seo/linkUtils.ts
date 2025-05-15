@@ -8,8 +8,21 @@ export function extractInternalLinks(html: string, baseUrl: string): string[] {
     const internalLinks = new Set<string>();
 
     for (const href of hrefs) {
-        if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) {
-            continue; // Skip anchors and special protocols
+        if (decodeURIComponent(href).includes('${') ||
+            href.includes('[http') || // Markdown-style embed
+            href.includes('](') ||    // another Markdown sign
+            href.includes('[') ||
+            href.includes(']')||
+            href.includes('@')) {
+            continue;
+        }
+        if (
+            href.startsWith('#') ||
+            href.startsWith('mailto:') ||
+            href.startsWith('tel:') ||
+            (!href.startsWith('/') && /^[\w.-]+\.[a-z]{2,}/i.test(href))
+        ) {
+            continue;
         }
 
         try {
@@ -17,7 +30,7 @@ export function extractInternalLinks(html: string, baseUrl: string): string[] {
             const base = new URL(baseUrl);
 
             if (resolvedUrl.origin === base.origin) {
-                internalLinks.add(resolvedUrl.pathname + resolvedUrl.search); // normalize
+                internalLinks.add(resolvedUrl.pathname + resolvedUrl.search);
             }
         } catch {
             // Ignore invalid URLs
@@ -27,8 +40,6 @@ export function extractInternalLinks(html: string, baseUrl: string): string[] {
     return Array.from(internalLinks);
 }
 
-// check query selector ^
-// посмотреть кейс с обсолютными путями ебаными
 
 export async function checkInternalLink(href: string, request: APIRequestContext): Promise<{
     url: string;

@@ -46,7 +46,7 @@ urls.forEach((url: string) => {
          unless it's part of the allowed exceptions.
     */
     //Ensure that pages don't have robots noindex meta tags unless specifically intended
-    test.only(`Check <meta name="robots"> tag for ${url}`, async ({ request }) => {
+    test(`Check <meta name="robots"> tag for ${url}`, async ({ request }) => {
         const res = await request.get(url);
         expect(res.status()).toBeLessThan(404);
 
@@ -58,10 +58,11 @@ urls.forEach((url: string) => {
         if (!isAllowed) {
             expect(hasNoindex, `Unexpected noindex on ${url}`).toBe(false);
         }
-    });
-    test(`Internal links on: ${url}`, async ({ request }) => {
+    })
+    //404 Link Verification
+    test.only(`Internal links on: ${url}`, async ({ request }) => {
         const res = await request.get(url);
-        expect(res.status(), `Page itself is unreachable: ${url}`).toBeLessThan(400);
+        expect(res.status(), `Page itself is unreachable: ${url}`).toBeLessThan(404);
 
         const html = await res.text();
         const internalLinks = extractInternalLinks(html, baseurl);

@@ -5,7 +5,7 @@
   "main": "index.js",
 
   "scripts": {
-    "generate:sitemap-urls": "ts-node scripts/generateSitemapUrlList.ts",
+    "generate:sitemap-urls": "ts-node src/helpers/seo/scripts/fetchSitemapUrls.ts",
     "run:seo-tests": "npm run generate:sitemap-urls && npx playwright test tests/SEO/seoTests.spec.ts"
   },
 
