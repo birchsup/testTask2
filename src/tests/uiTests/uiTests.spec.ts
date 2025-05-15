@@ -3,7 +3,7 @@ import {EmailGenerator} from "../../helpers/dataGen/dataGen";
 import { test } from '../../../test-fixtures';
 
 test.describe('Tests from test task', ()=>{
-  test.beforeEach(async ({page},testInfo) => {
+  test.beforeEach(async ({page}) => {
     await page.goto('/');
   });
 
