@@ -1,0 +1,25 @@
+{
+  "name": "testtaskmay",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+
+  "scripts": {
+    "generate:sitemap-urls": "ts-node scripts/generateSitemapUrlList.ts",
+    "run:seo-tests": "npm run generate:sitemap-urls && npx playwright test tests/SEO/seoTests.spec.ts"
+  },
+
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.18",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^9.8.0",
+    "dotenv": "^16.4.7"
+  }
+}
