@@ -1,44 +1,61 @@
 import { baseurl } from '../consts/mainSiteConst';
 import type { APIRequestContext } from '@playwright/test';
 
-export function extractInternalLinks(html: string, baseUrl: string): string[] {
-    const matches = [...html.matchAll(/<a[^>]+href=["'](.*?)["']/gi)];
-    const hrefs = matches.map((match) => match[1]);
+import * as cheerio from 'cheerio';
 
+export function extractInternalLinks(html: string, baseUrl: string): string[] {
+    const $ = cheerio.load(html);
+    const base = new URL(baseUrl);
     const internalLinks = new Set<string>();
 
-    for (const href of hrefs) {
-        if (decodeURIComponent(href).includes('${') ||
-            href.includes('[http') || // Markdown-style embed
-            href.includes('](') ||    // another Markdown sign
-            href.includes('[') ||
-            href.includes(']')||
-            href.includes('@')) {
-            continue;
+    const ignorePrefixes = ['sdk/', 'docs/', 'api/'];
+
+    $('a[href]').each((_, el) => {
+        const href = $(el).attr('href');
+        if (!href) return;
+
+        let decoded: string;
+        try {
+            decoded = decodeURIComponent(href);
+        } catch {
+            return;
         }
+
         if (
-            href.startsWith('#') ||
+            decoded.includes('${') ||
+            decoded.includes('[http') ||
+            decoded.includes('](') ||
+            decoded.includes('[') ||
+            decoded.includes(']') ||
+            decoded.includes('@') ||
+            decoded.startsWith('(') ||
+            decoded.endsWith(')') ||
             href.startsWith('mailto:') ||
             href.startsWith('tel:') ||
+            href.startsWith('javascript:') ||
+            href.startsWith('data:') ||
+            ignorePrefixes.some((prefix) => href.startsWith(prefix)) ||
             (!href.startsWith('/') && /^[\w.-]+\.[a-z]{2,}/i.test(href))
         ) {
-            continue;
+            return;
         }
 
         try {
             const resolvedUrl = new URL(href, baseUrl);
-            const base = new URL(baseUrl);
 
-            if (resolvedUrl.origin === base.origin) {
-                internalLinks.add(resolvedUrl.pathname + resolvedUrl.search);
-            }
+            // Пропускаем другие поддомены (например, app.netlify.com)
+            if (resolvedUrl.hostname !== base.hostname) return;
+
+            internalLinks.add(resolvedUrl.pathname + resolvedUrl.search);
         } catch {
             // Ignore invalid URLs
         }
-    }
+    });
 
     return Array.from(internalLinks);
 }
+
+
 
 
 export async function checkInternalLink(href: string, request: APIRequestContext): Promise<{
