@@ -6,7 +6,8 @@
 
   "scripts": {
     "generate:sitemap-urls": "ts-node src/helpers/seo/scripts/fetchSitemapUrls.ts",
-    "run:seo-tests": "npm run generate:sitemap-urls && npx playwright test tests/SEO/seoTests.spec.ts"
+    "run:seo-tests": "npm run generate:sitemap-urls && npx playwright test tests/SEO/seoTests.spec.ts",
+    "run:ui-tests": "npx playwright test src/tests/uiTests/uiTests.spec.ts"
   },
 
   "keywords": [],
