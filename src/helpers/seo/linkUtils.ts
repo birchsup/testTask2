@@ -56,8 +56,6 @@ export function extractInternalLinks(html: string, baseUrl: string): string[] {
 }
 
 
-
-
 export async function checkInternalLink(href: string, request: APIRequestContext): Promise<{
     url: string;
     status: number;

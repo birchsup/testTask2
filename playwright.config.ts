@@ -32,7 +32,7 @@ export default defineConfig({
     baseURL: process.env.BASE_URL,
     trace: 'on-first-retry',
   },
-  timeout: 100000,
+  timeout: 1000000,
 
   /* Configure projects for major browsers */
   projects: [

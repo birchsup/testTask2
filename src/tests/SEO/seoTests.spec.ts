@@ -60,7 +60,7 @@ urls.forEach((url: string) => {
         }
     })
     //404 Link Verification
-    test.only(`Internal links on: ${url}`, async ({ request }) => {
+    test(`Internal links on: ${url}`, async ({ request }) => {
         const res = await request.get(url);
         expect(res.status(), `Page itself is unreachable: ${url}`).toBeLessThan(404);
 

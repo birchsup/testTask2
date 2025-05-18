@@ -3,13 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-
   "scripts": {
     "generate:sitemap-urls": "ts-node src/helpers/seo/scripts/fetchSitemapUrls.ts",
     "run:seo-tests": "npm run generate:sitemap-urls && npx playwright test tests/SEO/seoTests.spec.ts",
     "run:ui-tests": "npx playwright test src/tests/uiTests/uiTests.spec.ts"
   },
-
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -21,6 +19,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^9.8.0",
+    "cheerio": "^1.0.0",
     "dotenv": "^16.4.7"
   }
 }
